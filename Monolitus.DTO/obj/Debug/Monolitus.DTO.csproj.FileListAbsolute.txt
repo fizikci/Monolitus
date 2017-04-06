@@ -1,0 +1,11 @@
+D:\Work\CSharp\Monolitus\Monolitus.DTO\obj\Debug\Monolitus.DTO.csprojResolveAssemblyReference.cache
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Monolitus.DTO.dll
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Monolitus.DTO.pdb
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Cinar.Extensions.dll
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Facebook.dll
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Newtonsoft.Json.dll
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Cinar.Extensions.pdb
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Facebook.xml
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Newtonsoft.Json.xml
+D:\Work\CSharp\Monolitus\Monolitus.DTO\obj\Debug\Monolitus.DTO.dll
+D:\Work\CSharp\Monolitus\Monolitus.DTO\obj\Debug\Monolitus.DTO.pdb
