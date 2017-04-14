@@ -83,7 +83,7 @@
                     <div class="login-container">
                         <div class="center">
                             <%-- <img src="{{entity.ThumbnailPicture}}" />--%>
-                            <h1 style="color: white;  background: #5090C1;  margin: 20px 110px;  padding: 10px;">
+                            <h1 style="color: white;  background: #5090C1;  margin: 20px 80px;  padding: 10px;">
                                 MONOLITUS
                             </h1>
                             <br />
@@ -98,7 +98,7 @@
                                     <div class="widget-main">
                                         <h4 class="header blue lighter bigger">
                                             <i class="icon-coffee green"></i>
-                                            Lütfen giris yapınız
+                                            Please log in
                                         </h4>
 
                                         <div class="space-6"></div>
@@ -127,7 +127,7 @@
                                                         <div class="clearfix">
                                                             <button type="submit" class="width-35 pull-right btn btn-sm btn-primary" id="login">
                                                                 <i class="icon-key"></i>
-                                                                Giriş Yap
+                                                                Enter
                                                             </button>
                                                         </div>
 

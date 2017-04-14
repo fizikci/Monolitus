@@ -192,7 +192,7 @@
                     <li>
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-home"></i>
-                            <span class="menu-text">Hoşgeldiniz </span>
+                            <span class="menu-text">Welcome </span>
                             <b class="arrow icon-angle-down"></b>
                         </a>
 
@@ -211,7 +211,7 @@
                         
                         <a href="#" class="dropdown-toggle">
                             <i class="icon-certificate"></i>
-                            <span class="menu-text">Yönetim </span>
+                            <span class="menu-text">Admin </span>
                             <b class="arrow icon-angle-down"></b>
                         </a>
 
