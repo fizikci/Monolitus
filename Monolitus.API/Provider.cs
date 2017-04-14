@@ -164,7 +164,7 @@ namespace Monolitus.API
             int mailPort = 25;
             string mailUserName = "info@monolit.us";
             string mailFrom = "info@monolit.us";
-            string mailPassword = "sdfsdfsdf";
+            string mailPassword = "ml1234A!";
             string mailFromDisplayName = "Monolitus";
 
             message = MailSablon.Replace("#{Body}", message);

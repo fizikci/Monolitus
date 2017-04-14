@@ -23,3 +23,5 @@ D:\Work\CSharp\Monolitus\Monolitus.API\bin\System.Data.SQLite.pdb
 D:\Work\CSharp\Monolitus\Monolitus.API\bin\Facebook.xml
 D:\Work\CSharp\Monolitus\Monolitus.API\obj\Debug\Monolitus.API.dll
 D:\Work\CSharp\Monolitus\Monolitus.API\obj\Debug\Monolitus.API.pdb
+D:\Work\CSharp\Monolitus\Monolitus.API\bin\Monolitus.API.dll.CodeAnalysisLog.xml
+D:\Work\CSharp\Monolitus\Monolitus.API\bin\Monolitus.API.dll.lastcodeanalysissucceeded

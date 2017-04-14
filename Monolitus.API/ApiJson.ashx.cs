@@ -361,33 +361,6 @@ namespace Monolitus.API
                 return false;
             }
         }
-        public bool ChangeMemberPhoneNumber(string phoneNo)
-        {
-            if (phoneNo.IsEmpty())
-                throw new APIException("Please enter a valid phone number", ErrorTypes.ValidationError);
-
-            phoneNo = phoneNo.TrimStart('0').Replace(" ", "");
-            if (!new Regex("\\d{10}").Match(phoneNo).Success)
-                throw new Exception("Phone number must be 10 digits. (örn: 8181234567)");
-
-            var member = Provider.CurrentUser;
-            if (member == null || member.IsAnonim())
-                throw new APIException("No such user", ErrorTypes.ValidationError);
-
-            try
-            {
-                member.NewPhoneNumber = phoneNo;
-                member.Keyword = Utility.CreatePassword(5);
-                member.Save();
-                
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         public bool ConfirmEmailChange(string keyword)
         {
@@ -404,30 +377,6 @@ namespace Monolitus.API
             member.IsDeleted = false;
             member.Keyword = "";
             member.EmailValidated = true;
-            member.Save();
-
-            Provider.CurrentUser = member;
-
-            return true;
-        }
-        public bool ConfirmPhoneNumberChange(string keyword)
-        {
-            if (Provider.CurrentUser.Id.IsEmpty())
-                throw new APIException("Access denied", ErrorTypes.ValidationError);
-
-            if (keyword.IsEmpty())
-                throw new APIException("Code required", ErrorTypes.ValidationError);
-
-            var member = Provider.Database.Read<User>("Id={0} AND Keyword = {1}", Provider.CurrentUser.Id, keyword);
-            if (member == null)
-                throw new APIException("Wrong code", ErrorTypes.ValidationError);
-
-            if (!string.IsNullOrWhiteSpace(member.NewPhoneNumber))
-                member.PhoneCell = member.NewPhoneNumber;
-            member.NewPhoneNumber = "";
-            member.IsDeleted = false;
-            member.Keyword = "";
-            member.PhoneCellValidated = true;
             member.Save();
 
             Provider.CurrentUser = member;
@@ -487,7 +436,6 @@ namespace Monolitus.API
                     user.FacebookId = req.FacebookId;
                     if (string.IsNullOrWhiteSpace(user.Name)) user.Name = req.Name;
                     if (string.IsNullOrWhiteSpace(user.Surname)) user.Surname = req.Surname;
-                    if (user.Gender == 0) user.Gender = req.Gender == "M" ? Cinsiyet.Erkek : Cinsiyet.Bayan;
                     user.Save();
 
                     return doLoginForUser(user);
@@ -503,7 +451,6 @@ namespace Monolitus.API
                     FacebookId = req.FacebookId,
                     Name = req.Name,
                     Surname = req.Surname,
-                    Gender = req.Gender == "M" ? Cinsiyet.Erkek : Cinsiyet.Bayan,
                     LastLoginDate = DateTime.Now,
                     Keyword = Utility.CreatePassword(16)
                 };
@@ -614,7 +561,7 @@ namespace Monolitus.API
         public bool SaveMessage(MessageInfo req)
         {
             if (!req.Email.IsEmpty() && !req.Email.IsEmail())
-                throw new APIException("Email adresi hatalı");
+                throw new APIException("Email address is not valid");
 
             if (req.UserId.IsEmpty())
                 req.UserId = Provider.CurrentUser.Id;
@@ -623,7 +570,7 @@ namespace Monolitus.API
             req.CopyPropertiesWithSameName(m);
             m.Save();
 
-            Provider.SendMail("Visiter message: "+req.Subject, req.MessageText);
+            Provider.SendMail("Visitor message: "+req.Subject, req.MessageText);
 
             return true;
         }

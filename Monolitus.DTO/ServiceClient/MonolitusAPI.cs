@@ -56,21 +56,9 @@ namespace Monolitus.DTO.ServiceClient
         {
             return Call<bool, string>(email, MethodBase.GetCurrentMethod().Name);
         }
-        public bool ChangeMemberPhoneNumber(string phoneNo) 
-        {
-            var res = Call<bool, string>(phoneNo, MethodBase.GetCurrentMethod().Name);
-            return res;
-        }
         public bool ConfirmEmailChange(string keyword)
         {
             return Call<bool, string>(keyword, MethodBase.GetCurrentMethod().Name);
-        }
-        public bool ConfirmPhoneNumberChange(string keyword) 
-        {
-            var res = Call<bool, string>(keyword, MethodBase.GetCurrentMethod().Name);
-            if (res)
-                this.User.PhoneCellValidated = true;
-            return res;
         }
         public ResLogin SignUp(ReqSignUp req)
         {

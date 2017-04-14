@@ -15,25 +15,18 @@ namespace Monolitus.API.Entity
         public string Password {get; set;}
         public UserTypes UserType {get; set;}
 
-        public string PhoneCell {get; set;}
         public bool EmailValidated {get; set;}
-        public bool PhoneCellValidated {get; set;}
 
         public string Surname { get; set; }
-        public DateTime DogumTarihi { get; set; }
-        public Cinsiyet Gender { get; set; }
         public string Avatar { get; set; }
-        public string City {get; set;}
         public string FacebookId {get; set;}
         public string TwitterId {get; set;}
 
 
         public string Keyword {get; set;}
         public DateTime LastLoginDate {get; set;}
-        public DateTime NewLoginDate {get; set;}
-        public string NewEmail {get; set;}
-        public string NewPhoneNumber { get; set; }
 
+        public string NewEmail {get; set;}
 
         public string FullName { get { return Name + " " + Surname; } }
         public bool HasRight(Rights right)
@@ -44,13 +37,6 @@ namespace Monolitus.API.Entity
         public override void BeforeSave()
         {
             base.BeforeSave();
-
-            if (!PhoneCell.IsEmpty())
-            {
-                PhoneCell = PhoneCell.TrimStart('0').Replace(" ", "");
-                if (!new Regex("\\d{10}").Match(PhoneCell).Success)
-                    throw new Exception("Phone number must be at least 6 characters. (örn: 8181234567)");
-            }
 
             if (!Email.IsEmail())
                 throw new Exception("Email address invalid");

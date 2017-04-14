@@ -7,11 +7,10 @@ using System.Web;
 
 namespace Monolitus.API.Entity
 {
-    public class Sector : NamedEntity
+    public class Shelf : NamedEntity
     {
-        public int OrderNo {get; set;}
-
-
+        [ColumnDetail(Length =12)]
+        public string FolderId { get; set; }
     }
 
 }

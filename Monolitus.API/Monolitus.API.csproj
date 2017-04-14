@@ -419,17 +419,13 @@
       <DependentUpon>ApiJson.ashx</DependentUpon>
     </Compile>
     <Compile Include="Entity\ApiUsage.cs" />
-    <Compile Include="Entity\Company.cs" />
-    <Compile Include="Entity\Odeme.cs" />
-    <Compile Include="Entity\CompanyKampanya.cs" />
-    <Compile Include="Entity\CompanyApplication.cs" />
+    <Compile Include="Entity\Bookmark.cs" />
+    <Compile Include="Entity\Shelf.cs" />
     <Compile Include="Entity\Log.cs" />
     <Compile Include="Entity\Message.cs" />
-    <Compile Include="Entity\Sector.cs" />
+    <Compile Include="Entity\Folder.cs" />
     <Compile Include="Entity\Session.cs" />
-    <Compile Include="Entity\SmsSend.cs" />
     <Compile Include="Entity\User.cs" />
-    <Compile Include="Entity\UserCompany.cs" />
     <Compile Include="Entity\ViewMainEntities.cs" />
     <Compile Include="Staff\BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
