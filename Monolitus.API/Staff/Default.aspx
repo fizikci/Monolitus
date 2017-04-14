@@ -219,13 +219,13 @@
                             <li>
                                 <a href="#/List/User">
                                     <i class="icon-flag"></i>
-                                    Kullanıcılar
+                                    Users
 			                    </a>
                             </li>                           
                             <li>
                                 <a href="#/List/Message">
                                     <i class="icon-comment"></i>
-                                    Mesajlar
+                                    Messages
 			                    </a>
                             </li>                           
                         </ul>
@@ -243,7 +243,7 @@
                             <li>
                                 <a href="#/List/ApiSession">
                                     <i class="icon-cloud"></i>
-                                    Oturumlar 
+                                    Sessions 
                                 </a>
                             </li>
 
@@ -257,14 +257,14 @@
                             <li>
                                 <a href="#/Logs">
                                     <i class="icon-hdd"></i>
-                                    Günlükler
+                                    Logs
 			                    </a>
                             </li>
 
                             <li>
                                 <a href="#/LogReport">
                                     <i class="icon-th-list"></i>
-                                    API Kullanım Raporu
+                                    API Usage
 			                    </a>
                             </li>
 
