@@ -24,6 +24,7 @@ using Monolitus.DTO.EntityInfo;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Text;
+using HtmlAgilityPack;
 
 namespace Monolitus.API
 {
@@ -575,6 +576,246 @@ namespace Monolitus.API
             return true;
         }
 
+        public List<IdName> GetFolderList(ReqGetList req)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            return
+                Provider.Database.ReadList<Folder>("select Id, Name from Folder where UserId={0}", req.UserId)
+                .ToEntityInfo<IdName>();
+        }
+
+        public List<ShelfInfo> GetShelfList(ReqGetBookmarkList req)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            return
+                Provider.Database.ReadList<Shelf>("select Id, Name from Shelf where FolderId={0}", req.FolderId)
+                .ToEntityInfo<ShelfInfo>();
+        }
+
+        public List<BookmarkInfo> GetBookmarkList(ReqGetBookmarkList req)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            if(req.FolderId.IsEmpty())
+                return
+                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where (ShelfId is null OR ShelfId='') AND UserId={0}", req.UserId)
+                    .ToEntityInfo<BookmarkInfo>();
+            else
+                return
+                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where ShelfId in (select Id from Shelf where FolderId={0}) AND UserId={1}", req.FolderId, req.UserId)
+                    .ToEntityInfo<BookmarkInfo>();
+        }
+
+        public bool AddFolder(ReqAddFolder req)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            Folder f = new Folder {
+                Name = req.Name,
+                UserId = Session.UserId
+            };
+
+            f.Save();
+
+            Shelf def = new Shelf
+            {
+                Name = "Others",
+                FolderId = f.Id
+            };
+
+            return true;
+        }
+
+        public ShelfInfo AddShelf(ReqAddShelf req)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            Shelf f = new Shelf
+            {
+                Name = req.Name,
+                FolderId = req.FolderId
+            };
+
+            f.Save();
+
+            return f.ToEntityInfo<ShelfInfo>();
+        }
+
+        public BookmarkInfo AddBookmark(ReqAddBookmark req)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            OGMeta meta = HtmlTool.FetchOG(req.Url);
+
+            var folderId = req.FolderId;
+            string shelfId = "";
+            if (!folderId.IsEmpty()) shelfId = Provider.Database.GetString("Select Id from Shelf where FolderId={0} order by InsertDate limit 1");
+
+            Bookmark f = new Bookmark
+            {
+                Name = meta.Title,
+                FolderId = req.FolderId,
+                Description = meta.Description,
+                Picture = meta.Image,
+                Title = meta.Title,
+                Url = req.Url,
+                ShelfId = shelfId,
+                UserId = Session.UserId
+            };
+
+            f.Save();
+
+            return f.ToEntityInfo<BookmarkInfo>();
+        }
         #endregion
+    }
+
+    public class OGVideo
+    {
+        public string Content { set; get; }
+        public string Type { set; get; }
+        public string Width { set; get; }
+        public string Height { set; get; }
+        public string Tag { set; get; }
+        public string SecureUrl { set; get; }
+    }
+    public class OGMeta
+    {
+        public OGMeta()
+        {
+            Video = new OGVideo();
+        }
+
+        public string AppId { set; get; }
+        public string SiteName { set; get; }
+        public string Locale { set; get; }
+        public string Type { set; get; }
+        public string Title { set; get; }
+        public string Description { set; get; }
+        public string Url { set; get; }
+        public string Image { set; get; }
+        public string Audio { set; get; }
+        public OGVideo Video { set; get; }
+    }
+    public class HtmlTool
+    {
+
+        public static OGMeta FetchOG(string url)
+        {
+            OGMeta meta = new OGMeta();
+
+            string html = FetchHtml(url);
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var list = doc.DocumentNode.SelectNodes("//meta");
+            foreach (var node in list)
+            {
+                if (node.HasAttributes)
+                {
+                    if (node.Attributes["property"] != null && node.Attributes["content"] != null)
+                    {
+                        switch (node.Attributes["property"].Value)
+                        {
+                            case "fb:app_id":
+                                meta.AppId = node.Attributes["content"].Value;
+                                break;
+                            case "og:site_name":
+                                meta.SiteName = node.Attributes["content"].Value;
+                                break;
+                            case "og:locale":
+                                meta.Locale = node.Attributes["content"].Value;
+                                break;
+                            case "og:type":
+                                meta.Type = node.Attributes["content"].Value;
+                                break;
+                            case "og:title":
+                                meta.Title = node.Attributes["content"].Value;
+                                break;
+                            case "og:description":
+                                meta.Description = node.Attributes["content"].Value;
+                                break;
+                            case "description":
+                                if (meta.Description != null && meta.Description.Length < 1)
+                                {
+                                    meta.Description = node.Attributes["content"].Value;
+                                }
+                                break;
+                            case "og:url":
+                                meta.Url = node.Attributes["content"].Value;
+                                break;
+                            case "og:image":
+                                meta.Image = node.Attributes["content"].Value;
+                                break;
+                            case "og:audio":
+                                meta.Audio = node.Attributes["content"].Value;
+                                break;
+                            case "og:video":
+                                meta.Video.Content = node.Attributes["content"].Value;
+                                break;
+                            case "og:video:type":
+                                meta.Video.Type = node.Attributes["content"].Value;
+                                break;
+                            case "og:video:width":
+                                meta.Video.Width = node.Attributes["content"].Value;
+                                break;
+                            case "og:video:height":
+                                meta.Video.Height = node.Attributes["content"].Value;
+                                break;
+                            case "og:video:tag":
+                                meta.Video.Tag = node.Attributes["content"].Value;
+                                break;
+                            case "og:video:secure_url":
+                                meta.Video.SecureUrl = node.Attributes["content"].Value;
+                                break;
+                        }
+                    }
+
+                    if (node.Attributes["name"] != null && node.Attributes["content"] != null)
+                    {
+                        switch (node.Attributes["name"].Value)
+                        {
+
+                            case "description":
+                                if (meta.Description != null && meta.Description.Length < 1)
+                                {
+                                    meta.Description = node.Attributes["content"].Value;
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return meta;
+        }
+
+        public static string FetchHtml(string url)
+        {
+            string o = "";
+
+            try
+            {
+                HttpWebRequest oReq = (HttpWebRequest)WebRequest.Create(url);
+                oReq.UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)";
+                HttpWebResponse resp = (HttpWebResponse)oReq.GetResponse();
+                Stream stream = resp.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                o = reader.ReadToEnd();
+            }
+            catch (Exception ex) { }
+
+            return o;
+        }
+
     }
 }

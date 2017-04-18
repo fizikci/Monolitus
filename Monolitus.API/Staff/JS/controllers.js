@@ -217,45 +217,7 @@ app.controller('DashboardController', function ($scope, $routeParams, entityServ
         });
     };
 
-    $scope.showReport('EtkinlikHistoryForLastWeek', 'Bu Hafta');
-
-    doAjaxCall("/Staff/Handlers/Report.ashx?report=UserDistribution", function (res) {
-        jQuery('#vmapUserCount').vectorMap({
-            map: 'world_en',
-            backgroundColor: 'transparent',
-            color: '#ffffff',
-            hoverOpacity: 0.7,
-            selectedColor: '#666666',
-            enableZoom: true,
-            showTooltip: true,
-            values: res,
-            scaleColors: ['#C8EEFF', '#006491'],
-            normalizeFunction: 'polynomial',
-            onLabelShow: function (element, label, code) {
-                if (res[code])
-                    label.text(label.text() + ' (' + res[code] + ")");
-            }
-        });
-    });
-
-    doAjaxCall("/Staff/Handlers/Report.ashx?report=EtkinlikHistoryMapForLastWeek", function (res) {
-        jQuery('#vmapEtkCountWeek').vectorMap({
-            map: 'world_en',
-            backgroundColor: 'transparent',
-            color: '#ffffff',
-            hoverOpacity: 0.7,
-            selectedColor: '#666666',
-            enableZoom: true,
-            showTooltip: true,
-            values: res,
-            scaleColors: ['#C8EEFF', '#006491'],
-            normalizeFunction: 'polynomial',
-            onLabelShow: function (element, label, code) {
-                if (res[code])
-                    label.text(label.text() + ' (' + res[code] + ")");
-            }
-        });
-    });
+    $scope.showReport('UsersForLastWeek', 'This Week');
 });
 
 var viewDetailListController = function ($scope, $routeParams, entityService) {
@@ -306,7 +268,7 @@ var viewDetailListController = function ($scope, $routeParams, entityService) {
     };
 
     $scope.delete = function (entity) {
-        if (confirm('Kayıt silinecek!'))
+        if (confirm('Record is to be deleted!'))
             entityService.delete($scope.entityName, entity, function () {
                 $scope.$apply(function () {
                     $scope.getPage($scope.currPage);
@@ -332,7 +294,7 @@ app.controller('ListUserController', function ($scope, $routeParams, entityServi
             $scope.UserTypeList = res;
         });
     });
-    var secenek = [{ "1": "Aktif Kayıtlar " }, { "0": "Pasif Kayıtlar" }];
+    var secenek = [{ "1": "Active " }, { "0": "Passive " }];
     $scope.Durum = secenek.reduce(function (id, val) {
         return angular.extend(id, val);
     }, {});

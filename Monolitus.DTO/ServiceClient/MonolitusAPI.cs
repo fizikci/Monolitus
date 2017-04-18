@@ -120,13 +120,40 @@ namespace Monolitus.DTO.ServiceClient
         #endregion
 
         #region monolitus
-
-
         public bool SaveMessage(MessageInfo req)
         {
             return Call<bool, MessageInfo>(req, MethodBase.GetCurrentMethod().Name);
         }
 
+        public List<IdName> GetFolderList(ReqGetList req)
+        {
+            return Call<List<IdName>, ReqGetList>(req, MethodBase.GetCurrentMethod().Name);
+        }
+
+        public List<ShelfInfo> GetShelfList(ReqGetBookmarkList req)
+        {
+            return Call<List<ShelfInfo>, ReqGetBookmarkList>(req, MethodBase.GetCurrentMethod().Name);
+        }
+
+        public List<BookmarkInfo> GetBookmarkList(ReqGetBookmarkList req)
+        {
+            return Call<List<BookmarkInfo>, ReqGetBookmarkList>(req, MethodBase.GetCurrentMethod().Name);
+        }
+
+        public bool AddFolder(ReqAddFolder req)
+        {
+            return Call<bool, ReqAddFolder>(req, MethodBase.GetCurrentMethod().Name);
+        }
+
+        public ShelfInfo AddShelf(ReqAddShelf req)
+        {
+            return Call<ShelfInfo, ReqAddShelf>(req, MethodBase.GetCurrentMethod().Name);
+        }
+
+        public BookmarkInfo AddBookmark(ReqAddBookmark req)
+        {
+            return Call<BookmarkInfo, ReqAddBookmark>(req, MethodBase.GetCurrentMethod().Name);
+        }
         #endregion
 
 

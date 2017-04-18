@@ -91,45 +91,9 @@ a {
 
 
 
-.kurum {
-  display: inline-block;
-  vertical-align: top;
-  width: 157px;
-  margin: 2px;
-  border-radius: 4px;
-  border: 1px solid gray;
-}
-
-.logo {
-    display: inline-block;
-    width: 80px;
-    height: 62px;
-    margin-top: 10px;
-    margin-left: 10px;
-  background-size: contain;
-  background-position: center;
-  border-radius: 4px;
-  background-repeat: no-repeat;
-}
-
-ul.counts {
-  display: inline-block;
-  list-style-type: none;
-  margin-left: 6px;
-  padding-left: 0px;
-  vertical-align: top;
-  margin-top: 11px;
-  width: 48px;
-}
-ul.counts li {
-    text-align:right;
-    cursor:pointer;
-}
-
-
 .nav-search {
   position: absolute;
-  top: 54px;
+  top: 6px;
   right: 0px;
   line-height: 24px;
 }
@@ -158,14 +122,7 @@ span.input-icon {
   top: 2px;
   color: rgb(111, 179, 224);
 }
-.email {
-  font-family: arial;
-  font-size: 15px;
-  font-weight: 900;    
-}
-.bbb{
-    color: #BBBBBB;
-}
+
 
 .green {color:green;}
 .red {color:red;}
@@ -180,4 +137,22 @@ span.input-icon {
 .jumbotron {
   padding-top: 28px;
   padding-bottom: 18px;
+}
+
+.navbar {
+    background-image: linear-gradient(#565656, #011425 60%, #044963) !important;
+    border-bottom: 1px solid #000812;
+}
+
+
+.folder {
+    background: url(/UserFiles/_design/folder_empty.png);
+    width: 128px;
+    height: 148px;
+    background-repeat: no-repeat;
+    background-position: top center;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 128px;
+    display: inline-block;
 }

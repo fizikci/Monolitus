@@ -34,6 +34,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Cinar\Cinar.CMS.Library\bin\Debug\Facebook.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\Cinar\Cinar.CMS.Library\_library\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.0.5.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Cinar\Cinar.CMS.Library\_library\Newtonsoft.Json.dll</HintPath>
@@ -66,16 +69,20 @@
     <Compile Include="Handlers\APIBridgeHandler.cs" />
     <Compile Include="ISetFieldsByPostData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\BaseEntityInfo.cs" />
     <Compile Include="Request\BaseRequest.cs" />
+    <Compile Include="Request\ReqAddBookmark.cs" />
+    <Compile Include="Request\ReqAddFolder.cs" />
+    <Compile Include="Request\ReqAddShelf.cs" />
+    <Compile Include="Request\ShelfInfo.cs" />
+    <Compile Include="Request\BookmarkInfo.cs" />
+    <Compile Include="Request\NamedEntityInfo.cs" />
     <Compile Include="Request\ReqChangeForgottenPassword.cs" />
     <Compile Include="Request\ReqChangeMemberPassword.cs" />
     <Compile Include="EntityInfo\CompanyAllInfo.cs" />
     <Compile Include="Request\ReqEmpty.cs" />
-    <Compile Include="Request\ReqGetUserCancelList.cs" />
-    <Compile Include="Request\ReqGetUserList.cs" />
-    <Compile Include="Request\ReqToggleUserCompanySubscription2.cs" />
-    <Compile Include="Request\ReqToggleUserCompanySubscription.cs" />
-    <Compile Include="Request\ReqGetCompanyList.cs" />
+    <Compile Include="Request\ReqGetBookmarkList.cs" />
+    <Compile Include="Request\ReqGetList.cs" />
     <Compile Include="Request\ReqSignUp.cs" />
     <Compile Include="Request\ReqLogin.cs" />
     <Compile Include="Request\ProfileInfo.cs" />

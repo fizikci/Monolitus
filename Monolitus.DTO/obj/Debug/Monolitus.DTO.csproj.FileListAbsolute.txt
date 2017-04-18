@@ -9,5 +9,6 @@ D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Facebook.xml
 D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Newtonsoft.Json.xml
 D:\Work\CSharp\Monolitus\Monolitus.DTO\obj\Debug\Monolitus.DTO.dll
 D:\Work\CSharp\Monolitus\Monolitus.DTO\obj\Debug\Monolitus.DTO.pdb
-D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Monolitus.DTO.dll.CodeAnalysisLog.xml
-D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\Monolitus.DTO.dll.lastcodeanalysissucceeded
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\HtmlAgilityPack.dll
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\HtmlAgilityPack.pdb
+D:\Work\CSharp\Monolitus\Monolitus.DTO\bin\Debug\HtmlAgilityPack.xml
