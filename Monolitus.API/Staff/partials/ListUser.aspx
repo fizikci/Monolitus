@@ -28,9 +28,7 @@
             <td>{{entity.Email}}  <i class="{{entity.EmailValidated ? 'icon-ok bigger-130 green' : 'icon-remove bigger-130 red'}}"></i></td>
             <td><a href="https://www.facebook.com/app_scoped_user_id/{{entity.FacebookId}}" target="_blank">{{entity.FacebookId}}</a></td>
             <td>{{entity.InsertDate | date:'dd-MM-yyyy'}}</td>
-            <td operations>
-                <a class="dtBtn green" ng-click="login(entity)"><i class="icon-user bigger-130" title="Login"></i></a>
-            </td>
+            <td operations></td>
         </tr>
     </tbody>
 </table>

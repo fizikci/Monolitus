@@ -133,7 +133,7 @@ namespace Monolitus.API
                         {
                             Data = (mi != null && mi.ReturnType == typeof (bool)) ? (object) false : null,
                             IsSuccessful = false,
-                            ErrorMessage = exInner.Message,
+                            ErrorMessage = exInner.Message + "<br><br>" + exInner.StackTrace,
                             ErrorType = (int) exInner.ErrorType,
                             ErrorCode = (int) exInner.ErrorCode,
                             ClientIPAddress = clientIPAddress,
@@ -603,11 +603,11 @@ namespace Monolitus.API
 
             if(req.FolderId.IsEmpty())
                 return
-                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where (ShelfId is null OR ShelfId='') AND UserId={0}", req.UserId)
+                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where (FolderId is null OR FolderId='') AND UserId={0}", req.UserId)
                     .ToEntityInfo<BookmarkInfo>();
             else
                 return
-                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where ShelfId in (select Id from Shelf where FolderId={0}) AND UserId={1}", req.FolderId, req.UserId)
+                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where FolderId={0} AND UserId={1}", req.FolderId, req.UserId)
                     .ToEntityInfo<BookmarkInfo>();
         }
 
@@ -620,7 +620,6 @@ namespace Monolitus.API
                 Name = req.Name,
                 UserId = Session.UserId
             };
-
             f.Save();
 
             Shelf def = new Shelf
@@ -628,6 +627,7 @@ namespace Monolitus.API
                 Name = "Others",
                 FolderId = f.Id
             };
+            def.Save();
 
             return true;
         }
@@ -657,15 +657,15 @@ namespace Monolitus.API
 
             var folderId = req.FolderId;
             string shelfId = "";
-            if (!folderId.IsEmpty()) shelfId = Provider.Database.GetString("Select Id from Shelf where FolderId={0} order by InsertDate limit 1");
+            if (!folderId.IsEmpty()) shelfId = Provider.Database.GetString("Select Id from Shelf where FolderId={0} order by InsertDate limit 1",folderId);
 
             Bookmark f = new Bookmark
             {
-                Name = meta.Title,
-                FolderId = req.FolderId,
+                Name = meta.Title.IsEmpty() ? req.Url : meta.Title,
+                FolderId = folderId,
                 Description = meta.Description,
-                Picture = meta.Image,
-                Title = meta.Title,
+                Picture = meta.Image.IsEmpty() ? "/UserFiles/_design/noimage.png" : meta.Image,
+                Title = meta.Title.IsEmpty() ? req.Url : meta.Title,
                 Url = req.Url,
                 ShelfId = shelfId,
                 UserId = Session.UserId
@@ -674,6 +674,38 @@ namespace Monolitus.API
             f.Save();
 
             return f.ToEntityInfo<BookmarkInfo>();
+        }
+
+        public bool MoveBookmarkToFolder(ReqMoveBookmarkToFolder req) {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            var b = Provider.Database.Read<Bookmark>("Id = {0}", req.BookmarkId);
+            var f = Provider.Database.Read<Folder>("Id = {0}", req.FolderId);
+
+            if (b.UserId != Session.UserId || f.UserId != Session.UserId)
+                throw new APIException("Access denied");
+
+            b.FolderId = f.Id;
+            b.Save();
+
+            return true;
+        }
+        public bool MoveBookmarkToShelf(ReqMoveBookmarkToShelf req)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            var b = Provider.Database.Read<Bookmark>("Id = {0}", req.BookmarkId);
+            var s = Provider.Database.Read<Shelf>("Id = {0}", req.ShelfId);
+
+            if (b.UserId != Session.UserId)
+                throw new APIException("Access denied");
+
+            b.ShelfId = s.Id;
+            b.Save();
+
+            return true;
         }
         #endregion
     }
@@ -718,83 +750,94 @@ namespace Monolitus.API
             doc.LoadHtml(html);
 
             var list = doc.DocumentNode.SelectNodes("//meta");
+            if (list == null) throw new APIException("Url not found");
             foreach (var node in list)
             {
-                if (node.HasAttributes)
+                if (!node.HasAttributes) continue;
+
+                if (node.Attributes["property"] != null && node.Attributes["content"] != null)
                 {
-                    if (node.Attributes["property"] != null && node.Attributes["content"] != null)
+                    switch (node.Attributes["property"].Value.ToLowerInvariant())
                     {
-                        switch (node.Attributes["property"].Value)
-                        {
-                            case "fb:app_id":
-                                meta.AppId = node.Attributes["content"].Value;
-                                break;
-                            case "og:site_name":
-                                meta.SiteName = node.Attributes["content"].Value;
-                                break;
-                            case "og:locale":
-                                meta.Locale = node.Attributes["content"].Value;
-                                break;
-                            case "og:type":
-                                meta.Type = node.Attributes["content"].Value;
-                                break;
-                            case "og:title":
-                                meta.Title = node.Attributes["content"].Value;
-                                break;
-                            case "og:description":
+                        case "fb:app_id":
+                            meta.AppId = node.Attributes["content"].Value;
+                            break;
+                        case "og:site_name":
+                            meta.SiteName = node.Attributes["content"].Value;
+                            break;
+                        case "og:locale":
+                            meta.Locale = node.Attributes["content"].Value;
+                            break;
+                        case "og:type":
+                            meta.Type = node.Attributes["content"].Value;
+                            break;
+                        case "og:title":
+                            meta.Title = node.Attributes["content"].Value;
+                            break;
+                        case "og:description":
+                            meta.Description = node.Attributes["content"].Value;
+                            break;
+                        case "description":
+                            if (meta.Description.IsEmpty())
                                 meta.Description = node.Attributes["content"].Value;
-                                break;
-                            case "description":
-                                if (meta.Description != null && meta.Description.Length < 1)
-                                {
-                                    meta.Description = node.Attributes["content"].Value;
-                                }
-                                break;
-                            case "og:url":
-                                meta.Url = node.Attributes["content"].Value;
-                                break;
-                            case "og:image":
-                                meta.Image = node.Attributes["content"].Value;
-                                break;
-                            case "og:audio":
-                                meta.Audio = node.Attributes["content"].Value;
-                                break;
-                            case "og:video":
-                                meta.Video.Content = node.Attributes["content"].Value;
-                                break;
-                            case "og:video:type":
-                                meta.Video.Type = node.Attributes["content"].Value;
-                                break;
-                            case "og:video:width":
-                                meta.Video.Width = node.Attributes["content"].Value;
-                                break;
-                            case "og:video:height":
-                                meta.Video.Height = node.Attributes["content"].Value;
-                                break;
-                            case "og:video:tag":
-                                meta.Video.Tag = node.Attributes["content"].Value;
-                                break;
-                            case "og:video:secure_url":
-                                meta.Video.SecureUrl = node.Attributes["content"].Value;
-                                break;
-                        }
-                    }
-
-                    if (node.Attributes["name"] != null && node.Attributes["content"] != null)
-                    {
-                        switch (node.Attributes["name"].Value)
-                        {
-
-                            case "description":
-                                if (meta.Description != null && meta.Description.Length < 1)
-                                {
-                                    meta.Description = node.Attributes["content"].Value;
-                                }
-                                break;
-                        }
+                            break;
+                        case "og:url":
+                            meta.Url = node.Attributes["content"].Value;
+                            break;
+                        case "og:image":
+                            meta.Image = node.Attributes["content"].Value;
+                            break;
+                        case "og:audio":
+                            meta.Audio = node.Attributes["content"].Value;
+                            break;
+                        case "og:video":
+                            meta.Video.Content = node.Attributes["content"].Value;
+                            break;
+                        case "og:video:type":
+                            meta.Video.Type = node.Attributes["content"].Value;
+                            break;
+                        case "og:video:width":
+                            meta.Video.Width = node.Attributes["content"].Value;
+                            break;
+                        case "og:video:height":
+                            meta.Video.Height = node.Attributes["content"].Value;
+                            break;
+                        case "og:video:tag":
+                            meta.Video.Tag = node.Attributes["content"].Value;
+                            break;
+                        case "og:video:secure_url":
+                            meta.Video.SecureUrl = node.Attributes["content"].Value;
+                            break;
                     }
                 }
+
+                if (node.Attributes["name"] != null && node.Attributes["content"] != null)
+                {
+                    switch (node.Attributes["name"].Value.ToLowerInvariant())
+                    {
+
+                        case "description":
+                            if (meta.Description.IsEmpty())
+                                meta.Description = node.Attributes["content"].Value;
+                            break;
+                        case "twitter:title":
+                            if (meta.Title.IsEmpty())
+                                meta.Title = node.Attributes["content"].Value;
+                            break;
+                        case "twitter:image":
+                            if (meta.Image.IsEmpty())
+                                meta.Image = node.Attributes["content"].Value;
+                            break;
+                    }
+                }
+
+                if (node.Name.ToLowerInvariant() == "title" && meta.Title.IsEmpty())
+                    meta.Title = node.InnerText;
+
+
             }
+
+
 
             return meta;
         }

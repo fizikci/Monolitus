@@ -13,7 +13,7 @@
     <div class="col-xs-12 col-sm-3 center">
         <div>
             <span class="profile-picture">
-                <img id="avatar" class="img-responsive" alt="Avatar" src="/Assets/avatars/emp.png">
+                <img id="avatar" class="img-responsive" alt="Avatar" src="{{entity.Avatar || '/Assets/avatars/emp.png'}}">
             </span>
 
             <div class="space-4"></div>
@@ -37,7 +37,6 @@
             <div class="space-4"></div>
 
             <small class="block">
-                <span class="orange">Nick: </span>{{entity.Nick}}<br>
                 <span class="orange">Signed Up: </span>{{entity.InsertDate | date}}<br>
                 <span class="orange">Last Login: </span>{{entity.LastLoginDate | date}}<br>
             </small>
@@ -80,7 +79,10 @@
                 <div class="widget-toolbar no-border">
                     <ul class="nav nav-tabs" id="recent-tab">
                         <li class="{{tab=='Folders' ? 'active':''}}">
-                            <a ng-click="tab='Folders'"><i class="icon-map-marker blue"></i>Folders</a>
+                            <a ng-click="tab='Folders'"><i class="icon-map-marker blue"></i> Monolits</a>
+                        </li>
+                        <li class="{{tab=='Bookmarks' ? 'active':''}}">
+                            <a ng-click="tab='Bookmarks'"><i class="icon-map-marker blue"></i> Bookmarks</a>
                         </li>
                     </ul>
                 </div>
@@ -102,6 +104,25 @@
                                     <tr ng-repeat="entity in list">
                                         <td indexer></td>
                                         <td link-to-parent="Folder">{{entity.Name}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane{{tab=='Bookmarks' ? 'active':''}}">
+                            <div ng-controller="ViewDetailListController" ng-init="entityName='Bookmark'; where='UserId = '">
+                                <page-size ng-show="count/pageSize>1"></page-size>
+                                <pagination ng-show="count/pageSize>1"></pagination>
+                                <table class="table table-striped table-bordered table-hover dataTable" aria-describedby="table-storage_info">
+                                    <tr>
+                                        <th>#</th>
+                                        <th column-header="Title" field="Title"></th>
+                                        <th column-header="Url" field="Url"></th>
+                                    </tr>
+                                    <tr ng-repeat="entity in list">
+                                        <td indexer></td>
+                                        <td link-to-parent="Bookmark">{{entity.Name}}</td>
+                                        <td><a href="{{entity.Url}}" target="_blank">{{entity.Url}}</a></td>
                                     </tr>
                                 </table>
                             </div>

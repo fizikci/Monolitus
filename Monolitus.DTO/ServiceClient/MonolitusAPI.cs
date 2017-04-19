@@ -154,6 +154,16 @@ namespace Monolitus.DTO.ServiceClient
         {
             return Call<BookmarkInfo, ReqAddBookmark>(req, MethodBase.GetCurrentMethod().Name);
         }
+
+        public bool MoveBookmarkToFolder(ReqMoveBookmarkToFolder req)
+        {
+            return Call<bool, ReqMoveBookmarkToFolder>(req, MethodBase.GetCurrentMethod().Name);
+        }
+
+        public bool MoveBookmarkToShelf(ReqMoveBookmarkToShelf req)
+        {
+            return Call<bool, ReqMoveBookmarkToShelf>(req, MethodBase.GetCurrentMethod().Name);
+        }
         #endregion
 
 

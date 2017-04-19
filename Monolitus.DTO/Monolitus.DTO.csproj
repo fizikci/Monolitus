@@ -71,6 +71,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\BaseEntityInfo.cs" />
     <Compile Include="Request\BaseRequest.cs" />
+    <Compile Include="Request\ReqMoveBookmarkToShelf.cs" />
+    <Compile Include="Request\ReqMoveBookmarkToFolder.cs" />
     <Compile Include="Request\ReqAddBookmark.cs" />
     <Compile Include="Request\ReqAddFolder.cs" />
     <Compile Include="Request\ReqAddShelf.cs" />

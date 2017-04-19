@@ -319,6 +319,10 @@ app.controller('EditUserController', function ($scope, $routeParams, entityServi
     defaultEditController($scope, $routeParams, entityService);
 });
 app.controller('ViewUserController', function ($scope, $routeParams, entityService) {
+    $scope.afterGet = function () {
+        if (!$scope.entity.Avatar.startsWith('http'))
+            $scope.entity.Avatar = 'http://api.monolit.us/Medya/Avatars/' + $scope.entity.Avatar;
+    };
     defaultViewController($scope, $routeParams, entityService);
 });
 
