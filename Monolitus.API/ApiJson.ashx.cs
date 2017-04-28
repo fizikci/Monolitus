@@ -586,11 +586,24 @@ namespace Monolitus.API
                 .ToEntityInfo<IdName>();
         }
 
+        public FolderInfo GetFolderInfo(string folderId)
+        {
+            var res = Provider.Database.Read<Folder>("Id = {0}", folderId).ToEntityInfo<FolderInfo>();
+
+            var req = new ReqGetBookmarkList { FolderId = folderId, UserId = res.UserId };
+            var shelves = GetShelfList(req);
+            var bookmarks = GetBookmarkList(req);
+
+            res.Shelves = shelves;
+
+            foreach (var shelf in shelves)
+                shelf.Bookmarks = bookmarks.Where(b => b.ShelfId == shelf.Id).ToList();
+
+            return res;
+        }
+
         public List<ShelfInfo> GetShelfList(ReqGetBookmarkList req)
         {
-            if (Session.UserId.IsEmpty())
-                throw new APIException("Access denied");
-
             return
                 Provider.Database.ReadList<Shelf>("select Id, Name from Shelf where FolderId={0}", req.FolderId)
                 .ToEntityInfo<ShelfInfo>();
@@ -598,9 +611,6 @@ namespace Monolitus.API
 
         public List<BookmarkInfo> GetBookmarkList(ReqGetBookmarkList req)
         {
-            if (Session.UserId.IsEmpty())
-                throw new APIException("Access denied");
-
             if(req.FolderId.IsEmpty())
                 return
                     Provider.Database.ReadList<Bookmark>("select * from Bookmark where (FolderId is null OR FolderId='') AND UserId={0}", req.UserId)
@@ -637,6 +647,11 @@ namespace Monolitus.API
             if (Session.UserId.IsEmpty())
                 throw new APIException("Access denied");
 
+            var folder = Provider.Database.Read<Folder>("Id = {0}", req.FolderId);
+
+            if (Session.UserId != folder.UserId)
+                throw new APIException("Access denied");
+
             Shelf f = new Shelf
             {
                 Name = req.Name,
@@ -653,19 +668,26 @@ namespace Monolitus.API
             if (Session.UserId.IsEmpty())
                 throw new APIException("Access denied");
 
+            var folder = Provider.Database.Read<Folder>("Id = {0}", req.FolderId);
+
+            if (Session.UserId != folder.UserId)
+                throw new APIException("Access denied");
+
             OGMeta meta = HtmlTool.FetchOG(req.Url);
 
             var folderId = req.FolderId;
             string shelfId = "";
             if (!folderId.IsEmpty()) shelfId = Provider.Database.GetString("Select Id from Shelf where FolderId={0} order by InsertDate limit 1",folderId);
 
+            var title = meta.Title.IsEmpty() ? req.Url : meta.Title;
+
             Bookmark f = new Bookmark
             {
-                Name = meta.Title.IsEmpty() ? req.Url : meta.Title,
+                Name = title.StrCrop(197),
                 FolderId = folderId,
-                Description = meta.Description,
+                Description = meta.Description.StrCrop(497),
                 Picture = meta.Image.IsEmpty() ? "/UserFiles/_design/noimage.png" : meta.Image,
-                Title = meta.Title.IsEmpty() ? req.Url : meta.Title,
+                Title = title.StrCrop(197),
                 Url = req.Url,
                 ShelfId = shelfId,
                 UserId = Session.UserId

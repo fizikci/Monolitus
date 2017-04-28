@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Monolitus.DTO.Request
 {
-    public class ShelfInfo : NamedEntityInfo
+    public class FolderInfo : NamedEntityInfo
     {
-        public string FolderId { get; set; }
-        public List<BookmarkInfo> Bookmarks { get; set; }
+        public string UserId { get; set; }
+        public List<ShelfInfo> Shelves { get; set; }
+
     }
 }

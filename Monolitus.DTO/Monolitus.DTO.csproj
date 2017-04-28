@@ -54,11 +54,7 @@
   <ItemGroup>
     <Compile Include="APIException.cs" />
     <Compile Include="EntityInfo\BaseEntityInfo.cs" />
-    <Compile Include="EntityInfo\CompanyKampanyaInfo.cs" />
     <Compile Include="EntityInfo\MessageInfo.cs" />
-    <Compile Include="EntityInfo\CompanyApplicationInfo.cs" />
-    <Compile Include="EntityInfo\CompanyInfo.cs" />
-    <Compile Include="EntityInfo\ListViewUserCompanyInfo.cs" />
     <Compile Include="EntityInfo\UserInfo.cs" />
     <Compile Include="EntityInfo\NamedEntityInfo.cs" />
     <Compile Include="Enums\EntityOperation.cs" />
@@ -76,12 +72,12 @@
     <Compile Include="Request\ReqAddBookmark.cs" />
     <Compile Include="Request\ReqAddFolder.cs" />
     <Compile Include="Request\ReqAddShelf.cs" />
+    <Compile Include="Request\FolderInfo.cs" />
     <Compile Include="Request\ShelfInfo.cs" />
     <Compile Include="Request\BookmarkInfo.cs" />
     <Compile Include="Request\NamedEntityInfo.cs" />
     <Compile Include="Request\ReqChangeForgottenPassword.cs" />
     <Compile Include="Request\ReqChangeMemberPassword.cs" />
-    <Compile Include="EntityInfo\CompanyAllInfo.cs" />
     <Compile Include="Request\ReqEmpty.cs" />
     <Compile Include="Request\ReqGetBookmarkList.cs" />
     <Compile Include="Request\ReqGetList.cs" />

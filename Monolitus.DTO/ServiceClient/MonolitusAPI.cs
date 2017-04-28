@@ -130,6 +130,11 @@ namespace Monolitus.DTO.ServiceClient
             return Call<List<IdName>, ReqGetList>(req, MethodBase.GetCurrentMethod().Name);
         }
 
+        public FolderInfo GetFolderInfo(string folderId)
+        {
+            return Call<FolderInfo, string>(folderId, MethodBase.GetCurrentMethod().Name);
+        }
+
         public List<ShelfInfo> GetShelfList(ReqGetBookmarkList req)
         {
             return Call<List<ShelfInfo>, ReqGetBookmarkList>(req, MethodBase.GetCurrentMethod().Name);
