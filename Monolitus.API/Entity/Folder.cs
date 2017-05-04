@@ -11,6 +11,11 @@ namespace Monolitus.API.Entity
     {
         [ColumnDetail(Length =12)]
         public string UserId { get; set; }
+
+        public override void Delete()
+        {
+            Provider.Database.ExecuteNonQuery("delete from Folder where Id = {0}", Id);
+        }
     }
 
 }

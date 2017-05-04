@@ -30,6 +30,10 @@ namespace Monolitus.API.Entity
         [ColumnDetail(Length = 500)]
         public string Description { get; set; }
 
+        public override void Delete()
+        {
+            Provider.Database.ExecuteNonQuery("delete from Bookmark where Id = {0}", Id);
+        }
 
     }
 

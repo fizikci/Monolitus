@@ -582,7 +582,7 @@ namespace Monolitus.API
                 throw new APIException("Access denied");
 
             return
-                Provider.Database.ReadList<Folder>("select Id, Name from Folder where UserId={0}", req.UserId)
+                Provider.Database.ReadList<Folder>("select Id, Name from Folder where UserId={0} order by InsertDate desc", req.UserId)
                 .ToEntityInfo<IdName>();
         }
 
@@ -605,7 +605,7 @@ namespace Monolitus.API
         public List<ShelfInfo> GetShelfList(ReqGetBookmarkList req)
         {
             return
-                Provider.Database.ReadList<Shelf>("select Id, Name from Shelf where FolderId={0}", req.FolderId)
+                Provider.Database.ReadList<Shelf>("select Id, Name from Shelf where FolderId={0} order by InsertDate desc", req.FolderId)
                 .ToEntityInfo<ShelfInfo>();
         }
 
@@ -613,11 +613,11 @@ namespace Monolitus.API
         {
             if(req.FolderId.IsEmpty())
                 return
-                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where (FolderId is null OR FolderId='') AND UserId={0}", req.UserId)
+                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where (FolderId is null OR FolderId='') AND UserId={0} order by InsertDate desc", req.UserId)
                     .ToEntityInfo<BookmarkInfo>();
             else
                 return
-                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where FolderId={0} AND UserId={1}", req.FolderId, req.UserId)
+                    Provider.Database.ReadList<Bookmark>("select * from Bookmark where FolderId={0} AND UserId={1} order by InsertDate desc", req.FolderId, req.UserId)
                     .ToEntityInfo<BookmarkInfo>();
         }
 
@@ -634,7 +634,7 @@ namespace Monolitus.API
 
             Shelf def = new Shelf
             {
-                Name = "Others",
+                Name = "First Shelf",
                 FolderId = f.Id
             };
             def.Save();
@@ -670,14 +670,14 @@ namespace Monolitus.API
 
             var folder = Provider.Database.Read<Folder>("Id = {0}", req.FolderId);
 
-            if (Session.UserId != folder.UserId)
+            if (folder != null && Session.UserId != folder.UserId)
                 throw new APIException("Access denied");
 
             OGMeta meta = HtmlTool.FetchOG(req.Url);
 
             var folderId = req.FolderId;
             string shelfId = "";
-            if (!folderId.IsEmpty()) shelfId = Provider.Database.GetString("Select Id from Shelf where FolderId={0} order by InsertDate limit 1",folderId);
+            if (!folderId.IsEmpty()) shelfId = Provider.Database.GetString("Select Id from Shelf where FolderId={0} order by InsertDate desc limit 1",folderId);
 
             var title = meta.Title.IsEmpty() ? req.Url : meta.Title;
 
@@ -729,6 +729,57 @@ namespace Monolitus.API
 
             return true;
         }
+
+        public bool DeleteShelf(string shelfId)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            var shelf = Provider.Database.Read<Shelf>("Id = {0}", shelfId);
+            if (shelf == null) return false;
+
+            var folder = Provider.Database.Read<Folder>("Id = {0}", shelf.FolderId);
+
+            if (Session.UserId != folder.UserId)
+                throw new APIException("Access denied");
+
+            shelf.Delete();
+
+            if (Provider.Database.GetInt("select count(*) from Shelf where FolderId={0}", folder.Id) == 0)
+                folder.Delete();
+
+            return true;
+        }
+
+        public bool RenameShelf(ShelfInfo shelfInfo)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            var shelf = Provider.Database.Read<Shelf>("Id = {0}", shelfInfo.Id);
+            if (shelf == null) return false;
+
+            var folder = Provider.Database.Read<Folder>("Id = {0}", shelf.FolderId);
+
+            if (Session.UserId != folder.UserId)
+                throw new APIException("Access denied");
+
+            Provider.Database.ExecuteNonQuery("update Shelf set Name={0} where Id={1}", shelfInfo.Name, shelfInfo.Id);
+
+            return true;
+        }
+
+        public bool DeleteBookmarks(string ids)
+        {
+            if (Session.UserId.IsEmpty())
+                throw new APIException("Access denied");
+
+            ids = "('"+ ids.Replace("'", "").Replace(",", "','") + "')";
+
+            Provider.Database.ExecuteNonQuery("delete from Bookmark where Id in " + ids);
+
+            return true;
+        }
         #endregion
     }
 
@@ -766,19 +817,39 @@ namespace Monolitus.API
         {
             OGMeta meta = new OGMeta();
 
-            string html = FetchHtml(url);
+            string html = FetchHtml(url).Trim();
+
+            if(html.IsEmpty())
+                throw new APIException("URL doesn't return HTML code");
 
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            var list = doc.DocumentNode.SelectNodes("//meta");
-            if (list == null) throw new APIException("Url not found");
-            foreach (var node in list)
+            var titleNode = doc.DocumentNode.SelectSingleNode("//title");
+            if (titleNode != null)
+                meta.Title = titleNode.InnerText;
+            try
+            {
+                var imgNode = doc.DocumentNode.SelectSingleNode("//img");
+                if (imgNode != null)
+                    meta.Image = imgNode.Attributes["src"].Value.ConvertToAbsoluteURL(url);
+            }
+            catch { }
+
+            var metaNodes = doc.DocumentNode.SelectNodes("//meta");
+
+            if (metaNodes == null)
+                return meta;
+
+            foreach (var node in metaNodes)
             {
                 if (!node.HasAttributes) continue;
 
                 if (node.Attributes["property"] != null && node.Attributes["content"] != null)
                 {
+                    if (node.Attributes["content"].Value.IsEmpty())
+                        continue;
+
                     switch (node.Attributes["property"].Value.ToLowerInvariant())
                     {
                         case "fb:app_id":
@@ -835,6 +906,9 @@ namespace Monolitus.API
 
                 if (node.Attributes["name"] != null && node.Attributes["content"] != null)
                 {
+                    if (node.Attributes["content"].Value.IsEmpty())
+                        continue;
+
                     switch (node.Attributes["name"].Value.ToLowerInvariant())
                     {
 
@@ -853,13 +927,7 @@ namespace Monolitus.API
                     }
                 }
 
-                if (node.Name.ToLowerInvariant() == "title" && meta.Title.IsEmpty())
-                    meta.Title = node.InnerText;
-
-
             }
-
-
 
             return meta;
         }

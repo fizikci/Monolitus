@@ -169,6 +169,22 @@ namespace Monolitus.DTO.ServiceClient
         {
             return Call<bool, ReqMoveBookmarkToShelf>(req, MethodBase.GetCurrentMethod().Name);
         }
+
+
+        public bool DeleteShelf(string shelfId)
+        {
+            return Call<bool, string>(shelfId, MethodBase.GetCurrentMethod().Name);
+        }
+
+        public bool RenameShelf(ShelfInfo shelfInfo)
+        {
+            return Call<bool, ShelfInfo>(shelfInfo, MethodBase.GetCurrentMethod().Name);
+        }
+
+        public bool DeleteBookmarks(string ids)
+        {
+            return Call<bool, string>(ids, MethodBase.GetCurrentMethod().Name);
+        }
         #endregion
 
 

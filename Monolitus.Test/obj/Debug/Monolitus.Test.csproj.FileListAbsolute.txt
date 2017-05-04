@@ -1,0 +1,11 @@
+D:\Work\CSharp\Monolitus\Monolitus.Test\obj\Debug\Monolitus.Test.csprojResolveAssemblyReference.cache
+D:\Work\CSharp\Monolitus\Monolitus.Test\bin\Debug\Monolitus.Test.exe.config
+D:\Work\CSharp\Monolitus\Monolitus.Test\bin\Debug\Monolitus.Test.exe
+D:\Work\CSharp\Monolitus\Monolitus.Test\bin\Debug\Monolitus.Test.pdb
+D:\Work\CSharp\Monolitus\Monolitus.Test\bin\Debug\Cinar.Extensions.dll
+D:\Work\CSharp\Monolitus\Monolitus.Test\bin\Debug\HtmlAgilityPack.dll
+D:\Work\CSharp\Monolitus\Monolitus.Test\bin\Debug\Cinar.Extensions.pdb
+D:\Work\CSharp\Monolitus\Monolitus.Test\bin\Debug\HtmlAgilityPack.pdb
+D:\Work\CSharp\Monolitus\Monolitus.Test\bin\Debug\HtmlAgilityPack.xml
+D:\Work\CSharp\Monolitus\Monolitus.Test\obj\Debug\Monolitus.Test.exe
+D:\Work\CSharp\Monolitus\Monolitus.Test\obj\Debug\Monolitus.Test.pdb
