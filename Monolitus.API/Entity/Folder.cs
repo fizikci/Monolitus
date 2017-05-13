@@ -18,4 +18,10 @@ namespace Monolitus.API.Entity
         }
     }
 
+    public class ListViewFolder : Folder
+    {
+        public string UserName { get; set; }
+        public string Html { get; set; }
+
+    }
 }

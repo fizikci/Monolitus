@@ -406,11 +406,13 @@
     <Content Include="Staff\JS\directives.js" />
     <Content Include="Staff\LogReport.aspx" />
     <Content Include="Staff\Pages\ImportStudentsFromExcel.aspx" />
+    <Content Include="Staff\Partials\List.aspx" />
     <Content Include="Staff\Partials\APIDemo.aspx" />
     <Content Include="Staff\Partials\ListMessage.aspx" />
     <Content Include="Staff\Partials\Dashboard.aspx" />
     <Content Include="Staff\JS\entityService.js" />
     <Content Include="Staff\Partials\EditUser.aspx" />
+    <Content Include="Staff\Partials\ListFolder.aspx" />
     <Content Include="Staff\Partials\ListUser.aspx" />
     <Content Include="Staff\Partials\ViewUser.aspx" />
     <Content Include="Web.config">

@@ -17,7 +17,7 @@ app.config(function ($routeProvider) {
                     else
                         return 'defaultListController';
                 },
-                templateUrl: function (params) { return '/Staff/Partials/List' + params.entityName + '.aspx'; }
+                templateUrl: function (params) { return '/Staff/Partials/List.aspx?entity=' + params.entityName; }
             })
         .when('/Edit/:entityName/:Id?',
             {

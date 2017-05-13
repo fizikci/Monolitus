@@ -223,6 +223,18 @@
 			                    </a>
                             </li>                           
                             <li>
+                                <a href="#/List/Folder">
+                                    <i class="icon-flag"></i>
+                                    Monolithes
+			                    </a>
+                            </li>                           
+                            <li>
+                                <a href="#/List/Bookmark">
+                                    <i class="icon-flag"></i>
+                                    Bookmarks
+			                    </a>
+                            </li>                           
+                            <li>
                                 <a href="#/List/Message">
                                     <i class="icon-comment"></i>
                                     Messages

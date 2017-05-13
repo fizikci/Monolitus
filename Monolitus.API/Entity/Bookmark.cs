@@ -37,4 +37,14 @@ namespace Monolitus.API.Entity
 
     }
 
+    public class ListViewBookmark : NamedEntity
+    {
+        public string UserName { get; set; }
+        public string FolderName { get; set; }
+        public string ShelfName { get; set; }
+        public string Html { get; set; }
+        public string UserId { get; set; }
+        public string FolderId { get; set; }
+        public string ShelfId { get; set; }
+    }
 }
