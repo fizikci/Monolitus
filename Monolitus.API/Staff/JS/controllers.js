@@ -298,7 +298,7 @@ app.controller('ListUserController', function ($scope, $routeParams, entityServi
     $scope.Durum = secenek.reduce(function (id, val) {
         return angular.extend(id, val);
     }, {});
-    $scope.orderBy = 'Name';
+    $scope.orderBy = 'InsertDate';
     defaultListController($scope, $routeParams, entityService);
 });
 app.controller('EditUserController', function ($scope, $routeParams, entityService) {

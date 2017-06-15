@@ -24,7 +24,7 @@
     <tbody>
         <tr ng-repeat="entity in list" ng-class="{deleted:entity.IsDeleted}">
             <td indexer></td>
-            <td link-to-view>{{entity.Name+' '+ entity.Surname}}</td>
+            <td link-to-view>{{entity.Name}}</td>
             <td>{{entity.Email}}  <i class="{{entity.EmailValidated ? 'icon-ok bigger-130 green' : 'icon-remove bigger-130 red'}}"></i></td>
             <td><a href="https://www.facebook.com/app_scoped_user_id/{{entity.FacebookId}}" target="_blank">{{entity.FacebookId}}</a></td>
             <td>{{entity.InsertDate | date:'dd-MM-yyyy'}}</td>
